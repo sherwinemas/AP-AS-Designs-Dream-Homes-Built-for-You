@@ -870,7 +870,6 @@ navigation
 }
 
 
-
 @media (max-width: 680px) {
     .navbar {
         height: 64px;
@@ -881,7 +880,7 @@ navigation
         display: flex;
     }
 
-    /* ── Mobile nav: DROPS DOWN as a tight horizontal menu row ── */
+    /* ── Mobile nav: DROPS DOWN and supports inner scrolling if list is long ── */
     .nav-links {
         position: fixed;
         top: 64px;
@@ -897,8 +896,11 @@ navigation
 
         padding: 16px 12px;
         gap: 4px;
-        max-height: auto;
-        overflow-y: visible;
+        
+        /* Fixed inner-scrolling parameters if content overflows */
+        max-height: calc(100vh - 64px);
+        overflow-y: auto;
+        overflow-x: hidden;
 
         transform: translateY(-110%);
         opacity: 0;
@@ -915,7 +917,6 @@ navigation
         opacity: 1;
         pointer-events: all;
     }
-
 
     .nav-links li {
         border-bottom: none;
@@ -936,46 +937,48 @@ navigation
         text-align: center;
         color: rgba(255, 255, 255, 0.65);
         white-space: nowrap;
-        transition: color 0.25s, background 0.25s;
+        transition: color 0.25s, background 0.25s, border-color 0.25s;
+        border-bottom: 2px solid transparent;
     }
-
-
     .nav-link::after {
         display: none;
     }
-
-
     .nav-link:hover {
         color: #C9A96E;
         background: rgba(201, 169, 110, 0.07);
-        padding-left: 4px;
     }
 
+    /* Hover & visual style for active page location */
     .nav-link.active {
         color: #C9A96E;
         background: rgba(201, 169, 110, 0.10);
-        padding-left: 4px;
-        border-left: none;
-
-
-        .services-grid {
-            grid-template-columns: 1fr;
-        }
-
-        .about-stats {
-            gap: 24px;
-        }
-
-        .hero-title {
-            font-size: 2.6rem;
-        }
-
-        .project-details {
-            flex-direction: column;
-            gap: 16px;
-        }
-
-        .contact-links {
-            grid-template-columns: 1fr;
-        }
+        border-bottom-color: #C9A96E;
     }
+    
+    .nav-link.active:hover {
+        background: rgba(201, 169, 110, 0.15);
+        color: #FFFFFF;
+    }
+
+    /* Layout fixes decoupled from breaking rules */
+    .services-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .about-stats {
+        gap: 24px;
+    }
+
+    .hero-title {
+        font-size: 2.6rem;
+    }
+
+    .project-details {
+        flex-direction: column;
+        gap: 16px;
+    }
+
+    .contact-links {
+        grid-template-columns: 1fr;
+    }
+}

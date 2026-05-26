@@ -11,10 +11,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
         const sections = document.querySelectorAll("section[id]");
         let current = "";
+        const scrollMid = window.scrollY + window.innerHeight / 2;
 
         sections.forEach((sec) => {
-            const top = sec.offsetTop - (navbar.offsetHeight + 80);
-            if (window.scrollY >= top) {
+            const top = sec.offsetTop;
+            const bottom = top + sec.offsetHeight;
+            if (scrollMid >= top && scrollMid < bottom) {
                 current = sec.getAttribute("id");
             }
         });
@@ -37,14 +39,14 @@ document.addEventListener("DOMContentLoaded", () => {
     hamburger.addEventListener("click", () => {
         hamburger.classList.toggle("open");
         navList.classList.toggle("open");
-        document.body.style.overflow = navList.classList.contains("open") ? "hidden" : "";
+        // Removed overflow lock — page stays scrollable even when nav is open
     });
 
     navLinks.forEach((link) => {
         link.addEventListener("click", () => {
             hamburger.classList.remove("open");
             navList.classList.remove("open");
-            document.body.style.overflow = "";
+            // Removed overflow reset — no longer needed
         });
     });
 
@@ -89,19 +91,34 @@ document.addEventListener("DOMContentLoaded", () => {
     serviceCards.forEach((card) => {
         card.addEventListener("mousemove", (e) => {
             const rect = card.getBoundingClientRect();
+
+            // If mouse is outside the card bounds, reset and bail out
+            if (
+                e.clientX < rect.left ||
+                e.clientX > rect.right ||
+                e.clientY < rect.top ||
+                e.clientY > rect.bottom
+            ) {
+                card.style.transform = "";
+                card.style.transition = "transform 0.4s ease";
+                return;
+            }
+
             const cx = rect.left + rect.width / 2;
             const cy = rect.top + rect.height / 2;
             const dx = (e.clientX - cx) / (rect.width / 2);
             const dy = (e.clientY - cy) / (rect.height / 2);
+            card.style.transition = "transform 0.1s ease";
             card.style.transform = `perspective(600px) rotateX(${-dy * 4}deg) rotateY(${dx * 4}deg) translateY(-6px)`;
         });
 
         card.addEventListener("mouseleave", () => {
+            card.style.transition = "transform 0.4s ease";
             card.style.transform = "";
         });
     });
 
-    /*6. HERO PARALLAX on mousemove*/
+    /*HERO PARALLAX on mousemove*/
     const heroGrid = document.querySelector(".hero-grid");
     const heroSection = document.querySelector(".hero-section");
 
